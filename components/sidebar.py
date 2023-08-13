@@ -7,6 +7,7 @@ from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 from app import app
 from datetime import datetime, date
+from datetime import date, datetime, timedelta
 import pdb
 from dash_bootstrap_templates import ThemeChangerAIO
 
@@ -24,21 +25,80 @@ import pandas as pd
 # ========= Layout ========= #
 # Seção PERFIL ------------------------
 layout =dbc.Card([
+
+    #Seção PERFIL -------------------------
     dbc.Row([
         dbc.Col([
-            dbc.Button(id='botao_avatar', children=[
-                html.Img(src='/assets/man.png', id='avatar_change', alt='Avatar', className='perfil_avatar')
-            ], style={'background-color': 'transparent', 'border-color': 'transparent'}),  
-        ], width=6),
+        dbc.Button(id='botao_avatar', children=[
+            html.Img(src='/assets/man.png', id='avatar_change', alt='Avatar', className='perfil_avatar')], 
+            style={'background-color': 'transparent', 'border-color': 'transparent'})
+    ], width=5),
 
+    dbc.Col([
+        html.Div([
+            dbc.Button(color='success', outline=True, id='open-novo-receita', children=['+ Receita']),
+            dbc.Button(color='info', outline=True, id='open-novo-despesa', children=['- Despesa']),
+            dbc.Button(color='warning', outline=True, id='open-novo-cartao', children=['# Cartão de Crédito']),
+            dbc.Button(color='dark', outline=True, id='open-novo-investimento', children=['* Investimento'])
+        ], className="d-grid gap-2 me-1")
+    ], width=7),
+
+    html.Br(),
+    html.Hr(),
+
+    # Seção FILTAR LANÇAMENTOS
+    dbc.Row([
         dbc.Col([
-            html.Div([
-                dbc.Button(color='success', outline=True, id='open-novo-receita', children=['+ Receita']),
-                dbc.Button(color='info', outline=True, id='open-novo-despesa', children=['- Despesa']),
-                dbc.Button(color='warning', outline=True, id='open-novo-cartao', children=['# Cartão de Crédito']),
-                dbc.Button(color='dark', outline=True, id='open-novo-investimento', children=['* Investimento'])
-            ], className="d-grid gap-2 me-1")
-        ], width=6)
+            html.Legend("Filtrar lançamentos", className="card-title"),
+            html.Label("Categorias das Receitas"),
+            html.Div(
+                dcc.Dropdown(id="dropdown-receita", 
+                                 clearable=False, 
+                                 style={"width": "100%"}, 
+                                 persistence=True, 
+                                 persistence_type="session",
+                                 multi=True),
+            ),
+
+            html.Label("Categorias das Despesas", style={'margin-top': '10px'}),
+            html.Div(
+                dcc.Dropdown(id="dropdown-despesa",
+                            clearable=False,
+                            style={"width": "100%"},
+                            persistence=True,
+                            persistence_type="session",
+                            multi=True)),
+                
+            html.Label("Categorias do Cartão de Crédito", style={'margin-top': '10px'}),
+            html.Div(
+                dcc.Dropdown(id="dropdown-cartao",
+                            clearable=False,
+                            style={"width": "100%"},
+                            persistence=True,
+                            persistence_type="session",
+                            multi=True)),
+                
+            html.Label("Categorias dos Investimentos", style={'margin-top': '10px'}),
+            html.Div(
+                dcc.Dropdown(id="dropdown-investimento",
+                            clearable=False,
+                            style={"width": "100%"},
+                            persistence=True,
+                            persistence_type="session",
+                            multi=True)),
+            
+            html.Legend("Período de Análise", style={"margin-top": "10px"}),
+            dcc.DatePickerRange(
+                month_format='Do MMM, YY',
+                end_date_placeholder_text='Data...',
+                start_date=datetime.today(),
+                end_date=datetime.today() + timedelta(days=31),
+                with_portal=True,
+                updatemode='singledate',
+                id='date-picker-config',
+                style={'z-index': '100'}
+                )
+        ])
     ]),
 
     # Modal Receita ----------------------
@@ -215,19 +275,14 @@ layout =dbc.Card([
             size="lg",
             is_open=False,
             centered=True,
-            backdrop=True),   
+            backdrop=True),
+    ], id='sidebar_completa'),
 
-    html.Hr(),
-        dbc.Nav([
-            dbc.NavLink("Dashboard", href="/dashboards", active="exact"),
-            dbc.NavLink("Extratos", href="/extratos", active="exact"),
-            dbc.NavLink("Receita", href="/receita", active="exact"),
-            dbc.NavLink("Despesa", href="/despesa", active="exact"),
-            dbc.NavLink("Investimento", href="/investimento", active="exact"),
-            dbc.NavLink("Cartão de Crédito", href="/cartao_credito", active="exact"),
-        ], vertical=True, pills=True, id='nav_buttons', style={"margin-bottons": "50px"}),
 
-], id='sidebar_completa')
+
+
+
+])
 
 
 # =========  Callbacks  =========== #

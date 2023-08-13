@@ -6,7 +6,7 @@ import pandas as pd
 import plotly.express as px
 
 from app import *
-from components import dashboards, extratos, cartao_credito, investimento, sidebar
+from components import dashboards, extratos, cartao_credito, investimento, sidebar, cabecalho
 
 
 # =========  Layout  =========== #
@@ -14,23 +14,18 @@ content = html.Div(id="page-content")
 
 
 app.layout = dbc.Container(children=[
-    dbc.Row([
-        dbc.Col([
-            html.H1("Controle Financeiro", className="text-primary"),
-            # html.P("by Faslala Assis", className="text-info"),
-            html.Hr(),
-        ], md=4),
-        dbc.Col([]),
-        dbc.Col([]),
+
+    dbc.Row([ 
+        dcc.Location(id='url'),
+        cabecalho.layout
         ]), 
         
     dbc.Row([
         dbc.Col([
-            dcc.Location(id='url'),
             sidebar.layout
         ], md=4),
         dbc.Col([
-            
+            content
         ], md=8)
     ])
 
