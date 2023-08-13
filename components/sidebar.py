@@ -228,7 +228,7 @@ layout =dbc.Card([
 
                         dbc.Col([
                             html.Label("Categoria da despesa"),
-                            dbc.Select(id='select_receita', options=[], value=[])
+                            dbc.Select(id='select_despesa', options=[], value=[])
                         ], width=4)
                     ], style={"margin-top": "25px"}),
                     

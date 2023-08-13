@@ -22,8 +22,6 @@ else:
     df_despesas.to_csv("df_despesas.csv")
     df_receitas.to_csv("df_receitas.csv")
 
-
-
 if ("df_cat_receita.csv" in os.listdir()) and ("df_cat_despesa.csv" in os.listdir()):
     df_cat_receita = pd.read_csv("df_cat_receita.csv", index_col=0)
     df_cat_despesa = pd.read_csv("df_cat_despesa.csv", index_col=0)

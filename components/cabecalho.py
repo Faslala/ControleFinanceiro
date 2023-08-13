@@ -1,15 +1,5 @@
-import os
-import dash
-import json
-import plotly.express as px
-from dash import html, dcc
-from dash.dependencies import Input, Output, State
+from dash import html
 import dash_bootstrap_components as dbc
-from app import app
-from datetime import datetime, date
-import pdb
-from dash_bootstrap_templates import ThemeChangerAIO
-
 
 layout = dbc.Row([
 
@@ -33,7 +23,7 @@ layout = dbc.Row([
                 dbc.NavLink("Cartão de Crédito", href="/cartao_credito", active="exact"),
             ], pills=True, id='nav_buttons')
 
-        ],style={"margin-top": "3px", "margin-bottom": "3px", 'padding-top': '8px', 'padding-bottom': '8px'})
+        ], style={"margin-top": "3px", "margin-bottom": "3px", 'padding-top': '8px', 'padding-bottom': '8px'})
           
         ], md=7)
 ])
