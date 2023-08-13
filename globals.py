@@ -10,12 +10,12 @@ if ("df_despesas.csv" in os.listdir()) and ("df_receitas.csv" in os.listdir()):
     df_receitas["Data"] = df_receitas["Data"].apply(lambda x: x.date())
 
 else:
-    data_structure = {'Valor':[],
-        'Efetuado':[],
-        'Fixo':[],
-        'Data':[],
-        'Categoria':[],
-        'Descrição':[],}
+    data_structure = {'Valor': [],
+                      'Efetuado': [],
+                      'Fixo': [],
+                      'Data': [],
+                      'Categoria': [],
+                      'Descrição': [], }
 
     df_receitas = pd.DataFrame(data_structure)
     df_despesas = pd.DataFrame(data_structure)
@@ -28,12 +28,12 @@ if ("df_cat_receita.csv" in os.listdir()) and ("df_cat_despesa.csv" in os.listdi
     cat_receita = df_cat_receita.values.tolist()
     cat_despesa = df_cat_despesa.values.tolist()
 
-else:    
+else:
     cat_receita = {'Categoria': ["Salário", "Aluguel", "13o", "Férias", "Mesada", "Presente", "Reembolso Médico"]}
-    cat_despesa = {'Categoria': ["Alimentação", "Aluguel", "Gasolina", "Saúde", "Lazer", "Condomínio", "Internet residencial"]}
-    
+    cat_despesa = {
+        'Categoria': ["Alimentação", "Aluguel", "Gasolina", "Saúde", "Lazer", "Condomínio", "Internet residencial"]}
+
     df_cat_receita = pd.DataFrame(cat_receita, columns=['Categoria'])
     df_cat_despesa = pd.DataFrame(cat_despesa, columns=['Categoria'])
     df_cat_receita.to_csv("df_cat_receita.csv")
     df_cat_despesa.to_csv("df_cat_despesa.csv")
-
