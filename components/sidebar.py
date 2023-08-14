@@ -167,7 +167,7 @@ layout = dbc.Card([
                                         html.Legend('Excluir Categorias', style={'color': 'red'}),
                                         dbc.Checklist(
                                             id='checkist-selected-style-receita',
-                                            options=[],
+                                            options=[{'label': i, 'value': i} for i in cat_receita],
                                             value=[],
                                             label_checked_style={'color': 'red'},
                                             input_checked_style={'background-color': 'blue', 'borderColor': 'orange'},
@@ -262,7 +262,7 @@ layout = dbc.Card([
                                     html.Legend("Excluir categorias", style={'color': 'red'}),
                                     dbc.Checklist(
                                         id="checklist-selected-style-despesa",
-                                        # options=[{"label": i, "value": i} for i in cat_despesa],
+                                        options=[{"label": i, "value": i} for i in cat_despesa],
                                         value=[],
                                         label_checked_style={"color": "red"},
                                         input_checked_style={"backgroundColor": "#fa7268",
