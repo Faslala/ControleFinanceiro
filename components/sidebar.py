@@ -1,31 +1,11 @@
-import os
-import dash
-import json
-import plotly.express as px
 from dash import html, dcc
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 from app import app
-from datetime import datetime, date
 from datetime import date, datetime, timedelta
-import pdb
-from dash_bootstrap_templates import ThemeChangerAIO
-
-# ========= DataFrames ========= #
-import numpy as np
-import pandas as pd
 from globals import *
 
-# df_cat_receita = pd.read_csv("C:\\Users\\Rodrigo\\Desktop\\Dash - Rodrigo "
-#                              "Vanzelotti\\MyBudget\\MyBudget\\df_cat_receita.csv")
-# cat_receita = df_cat_receita['Categoria'].tolist()
-#
-# df_cat_despesa = pd.read_csv("C:\\Users\\Rodrigo\\Desktop\\Dash - Rodrigo "
-#                              "Vanzelotti\\MyBudget\\MyBudget\\df_cat_despesa.csv")
-# cat_despesa = df_cat_despesa['Categoria'].tolist()
-
 # ========= Layout ========= #
-# Seção PERFIL ------------------------
 layout = dbc.Card([
 
     # Seção PERFIL -------------------------
@@ -38,10 +18,10 @@ layout = dbc.Card([
 
         dbc.Col([
             html.Div([
-                dbc.Button(color='success', outline=True, id='open-novo-receita', children=['+ Receita']),
-                dbc.Button(color='info', outline=True, id='open-novo-despesa', children=['- Despesa']),
-                dbc.Button(color='warning', outline=True, id='open-novo-cartao', children=['# Cartão de Crédito']),
-                dbc.Button(color='dark', outline=True, id='open-novo-investimento', children=['* Investimento'])
+                dbc.Button(color='success', outline=True, id='open-novo-receita', children=['Receita']),
+                dbc.Button(color='info', outline=True, id='open-novo-despesa', children=['Despesa']),
+                dbc.Button(color='warning', outline=True, id='open-novo-cartao', children=['Cartão de Crédito']),
+                dbc.Button(color='dark', outline=True, id='open-novo-investimento', children=['Investimento'])
             ], className="d-grid gap-2 me-1")
         ], width=7),
 
@@ -111,12 +91,12 @@ layout = dbc.Card([
                     dbc.Row([
                         dbc.Col([
                             dbc.Label('Descrição: '),
-                            dbc.Input(placeholder='Ex.: dividendos da bolsa, herança, ...', id='txt-receita')
-                        ], width=6),
+                            dbc.Input(placeholder='Ex.: Salário, Dividendos, ...', id='txt-receita')
+                        ], width=6, style={'margin-right': '55px'}),
                         dbc.Col([
                             dbc.Label('Valor: '),
-                            dbc.Input(placeholder='$100.00', id='valor_receita', value='')
-                        ], width=6)
+                            dbc.Input(placeholder='R$ -', id='valor_receita', value='')
+                        ], width=5)
                     ]),
 
                     dbc.Row([
@@ -153,28 +133,29 @@ layout = dbc.Card([
                             dbc.AccordionItem(children=[
                                 dbc.Row([
                                     dbc.Col([
-                                        html.Legend('Adicionar Categoria', style={'color': 'green'}),
-                                        dbc.Input(type='text', placeholder='Nova Categoria...', id='input-add-receita',
-                                                  value=''),
-                                        html.Br(),
-                                        dbc.Button('Adicionar', class_name='btn btn-success', id='add-category-receita',
-                                                   style={'margin-top': '20px'}),
-                                        html.Br(),
-                                        html.Div(id='category-div-add-receita', style={})
-                                    ], width=6),
-
-                                    dbc.Col([
-                                        html.Legend('Excluir Categorias', style={'color': 'red'}),
+                                        html.Legend('Categorias', style={'color': 'green'}),
                                         dbc.Checklist(
-                                            id='checkist-selected-style-receita',
+                                            id='checklist-selected-style-receita',
                                             options=[{'label': i, 'value': i} for i in cat_receita],
                                             value=[],
                                             label_checked_style={'color': 'red'},
                                             input_checked_style={'background-color': 'blue', 'borderColor': 'orange'},
                                         ),
-                                        dbc.Button('Remover', color='warning', id='remove-category-receita',
-                                                   style={'margin-top': '20px'})
-                                    ], width=6)
+                                        html.Div(id='category-div-add-receita', style={})
+                                    ], width=5),
+
+                                    dbc.Col(width=1),
+
+                                    dbc.Col([
+                                        dbc.Input(type='text', placeholder='Digitar Nova Categoria...',
+                                                  id='input-add-receita',
+                                                  value=''),
+                                        dbc.Button('Adicionar Categoria', class_name='btn btn-success',
+                                                   id='add-category-receita', style={'margin-top': '20px'}),
+                                        dbc.Button('Remover Categoria', color='warning',
+                                                   id='remove-category-receita', style={'margin-top': '20px'}),
+
+                                    ], width=5)
                                 ]),
                             ], title="Adicionar/Remover Categorias",
                             ),
@@ -206,12 +187,19 @@ layout = dbc.Card([
                 dbc.Row([
                     dbc.Col([
                         dbc.Label("Descrição: "),
-                        dbc.Input(placeholder="Ex.: dividendos da bolsa, herança...", id="txt-despesa"),
-                    ], width=6),
+                        dbc.Input(placeholder="Ex.: Aluguel, Internet...", id="txt-despesa"),
+                    ], width=5),
                     dbc.Col([
                         dbc.Label("Valor: "),
-                        dbc.Input(placeholder="$100.00", id="valor_despesa", value="")
-                    ], width=6)
+                        dbc.Input(placeholder="R$ ", id="valor_despesa", value="")
+                    ], width=4, style={'margin-left': '5px', 'margin-right': '55px'}),
+                    dbc.Col([
+                        dbc.Label("Pagamento: "),
+                        dbc.Select(id='select_pagamento',
+                                   options=[{'label': i, 'value': i} for i in cat_pagamento],
+                                   value=[cat_pagamento[0]])
+                    ], width=2)
+
                 ]),
 
                 dbc.Row([
@@ -228,8 +216,8 @@ layout = dbc.Card([
                     dbc.Col([
                         dbc.Label("Opções Extras"),
                         dbc.Checklist(
-                            options=[{"label": "Foi recebida", "value": 1},
-                                     {"label": "despesa Recorrente", "value": 2}],
+                            options=[{"label": "Foi Paga", "value": 1},
+                                     {"label": "Despesa Recorrente", "value": 2}],
                             value=[1],
                             id="switches-input-despesa",
                             switch=True),
@@ -248,33 +236,33 @@ layout = dbc.Card([
                         dbc.AccordionItem(children=[
                             dbc.Row([
                                 dbc.Col([
-                                    html.Legend("Adicionar categoria", style={'color': 'green'}),
-                                    dbc.Input(type="text", placeholder="Nova categoria...", id="input-add-despesa",
-                                              value=""),
-                                    html.Br(),
-                                    dbc.Button("Adicionar", className="btn btn-success", id="add-category-despesa",
-                                               style={"margin-top": "20px"}),
-                                    html.Br(),
-                                    html.Div(id="category-div-add-despesa", style={}),
-                                ], width=6),
-
-                                dbc.Col([
-                                    html.Legend("Excluir categorias", style={'color': 'red'}),
+                                    html.Legend("Categorias", style={'color': 'green'}),
                                     dbc.Checklist(
                                         id="checklist-selected-style-despesa",
                                         options=[{"label": i, "value": i} for i in cat_despesa],
                                         value=[],
                                         label_checked_style={"color": "red"},
-                                        input_checked_style={"backgroundColor": "#fa7268",
-                                                             "borderColor": "#ea6258"},
+                                        input_checked_style={'background-color': 'blue', 'borderColor': 'orange'},
                                     ),
-                                    dbc.Button("Remover", color="warning", id="remove-category-despesa",
-                                               style={"margin-top": "20px"}),
-                                ], width=6)
+                                    html.Div(id="category-div-add-despesa", style={}),
+                                ], width=5),
+
+                                dbc.Col(width=1),
+
+                                dbc.Col([
+                                    dbc.Input(type="text", placeholder="Digitar Nova categoria...",
+                                              id="input-add-despesa", value=""),
+                                    dbc.Button("Adicionar Categoria", className="btn btn-success",
+                                               id="add-category-despesa", style={"margin-top": "20px"}),
+                                    dbc.Button("Remover Categoria", color="warning",
+                                               id="remove-category-despesa", style={"margin-top": "20px"}),
+                                ], width=5)
                             ]),
                         ], title="Adicionar/Remover Categorias",
                         ),
                     ], flush=True, start_collapsed=True, id='accordion-despesa'),
+
+                    html.Div(id="id_teste_despesa", style={"padding-top": "20px"}),
 
                     dbc.ModalFooter([
                         dbc.Button("Adicionar despesa", color="success", id="salvar_despesa", value="despesa"),
@@ -292,7 +280,6 @@ layout = dbc.Card([
             centered=True,
             backdrop=True),
     ], id='sidebar_completa'),
-
 ])
 
 
@@ -352,96 +339,6 @@ def toggle_modal(n1, is_open):
         return not is_open
 
 
-# Add/Remove categoria despesa
-@app.callback(
-    [Output("category-div-add-despesa", "children"),
-     Output("category-div-add-despesa", "style"),
-     Output("select_despesa", "options"),
-     Output('checklist-selected-style-despesa', 'options'),
-     Output('checklist-selected-style-despesa', 'value'),
-     Output('stored-cat-despesas', 'data')],
-
-    [Input("add-category-despesa", "n_clicks"),
-     Input("remove-category-despesa", 'n_clicks')],
-
-    [State("input-add-despesa", "value"),
-     State('checklist-selected-style-despesa', 'value'),
-     State('stored-cat-despesas', 'data')]
-)
-def add_category(n, n2, txt, check_delete, data):
-    cat_despesa = list(data["Categoria"].values())
-
-    txt1 = []
-    style1 = {}
-
-    if n:
-        if txt == "" or txt is None:
-            txt1 = "O campo de texto não pode estar vazio para o registro de uma nova categoria."
-            style1 = {'color': 'red'}
-
-        else:
-            cat_despesa = cat_despesa + [txt] if txt not in cat_despesa else cat_despesa
-            txt1 = f'A categoria {txt} foi adicionada com sucesso!'
-            style1 = {'color': 'green'}
-
-    if n2:
-        if len(check_delete) > 0:
-            cat_despesa = [i for i in cat_despesa if i not in check_delete]
-
-    opt_despesa = [{"label": i, "value": i} for i in cat_despesa]
-    df_cat_despesa = pd.DataFrame(cat_despesa, columns=['Categoria'])
-    df_cat_despesa.to_csv("df_cat_despesa.csv")
-    data_return = df_cat_despesa.to_dict()
-
-    return [txt1, style1, opt_despesa, opt_despesa, [], data_return]
-
-
-# Add/Remove categoria receita
-@app.callback(
-    [Output("category-div-add-receita", "children"),
-     Output("category-div-add-receita", "style"),
-     Output("select_receita", "options"),
-     Output('checklist-selected-style-receita', 'options'),
-     Output('checklist-selected-style-receita', 'value'),
-     Output('stored-cat-receitas', 'data')],
-
-    [Input("add-category-receita", "n_clicks"),
-     Input("remove-category-receita", 'n_clicks')],
-
-    [State("input-add-receita", "value"),
-     State('checklist-selected-style-receita', 'value'),
-     State('stored-cat-receitas', 'data')]
-)
-def add_category(n, n2, txt, check_delete, data):
-    cat_receita = list(data["Categoria"].values())
-
-    txt1 = []
-    style1 = {}
-
-    if n:
-        if txt == "" or txt is None:
-            txt1 = "O campo de texto não pode estar vazio para o registro de uma nova categoria."
-            style1 = {'color': 'red'}
-
-    if n and not (txt == "" or txt is None):
-        cat_receita = cat_receita + [txt] if txt not in cat_receita else cat_receita
-        txt1 = f'A categoria {txt} foi adicionada com sucesso!'
-        style1 = {'color': 'green'}
-
-    if n2:
-        if not check_delete:
-            pass
-        else:
-            cat_receita = [i for i in cat_receita if i not in check_delete]
-
-    opt_receita = [{"label": i, "value": i} for i in cat_receita]
-    df_cat_receita = pd.DataFrame(cat_receita, columns=['Categoria'])
-    df_cat_receita.to_csv("df_cat_receita.csv")
-    data_return = df_cat_receita.to_dict()
-
-    return [txt1, style1, opt_receita, opt_receita, [], data_return]
-
-
 # Enviar Form receita
 @app.callback(
     Output('store-receitas', 'data'),
@@ -464,11 +361,12 @@ def salve_form_receita(n, descricao, valor, date, switches, categoria, dict_rece
         valor = round(float(valor), 2)
         date = pd.to_datetime(date).date()
         categoria = categoria[0] if type(categoria) == list else categoria
+        pagamento = 'NA'
 
         recebido = 1 if 1 in switches else 0
         fixo = 0 if 2 in switches else 0
 
-        df_receitas.loc[df_receitas.shape[0]] = [valor, recebido, fixo, date, categoria, descricao]
+        df_receitas.loc[df_receitas.shape[0]] = [valor, recebido, fixo, date, categoria, descricao, pagamento]
         df_receitas.to_csv("df_receitas.csv")
 
     data_return = df_receitas.to_dict()
@@ -482,29 +380,95 @@ def salve_form_receita(n, descricao, valor, date, switches, categoria, dict_rece
     Input("salvar_despesa", "n_clicks"),
 
     [
+        State("txt-despesa", "value"),
         State("valor_despesa", "value"),
+        State("date-despesas", "date"),
         State("switches-input-despesa", "value"),
         State("select_despesa", "value"),
-        State("date-despesas", "date"),
-        State("txt-despesa", "value"),
+        State("select_pagamento", "value"),
         State('store-despesas', 'data')
-    ])
-def salve_form_despesa(n, valor, switches, descricao, date, txt, dict_despesas):
+    ]
+)
+def salve_form_despesa(n, descricao, valor, date, switches, categoria, pagamento, dict_despesas):
     df_despesas = pd.DataFrame(dict_despesas)
 
     if n and not (valor == "" or valor is None):
-        valor = round(valor, 2)
+        valor = round(float(valor), 2)
         date = pd.to_datetime(date).date()
-        # categoria = categoria[0] if type(categoria) == list else categoria
+        categoria = categoria[0] if type(categoria) == list else categoria
+        pagamento = pagamento[0] if type(pagamento) == list else pagamento
 
         recebido = 1 if 1 in switches else 0
         fixo = 0 if 2 in switches else 0
 
-        if descricao is None or descricao == "":
-            descricao = 0
-
-        df_despesas.loc[df_despesas.shape[0]] = [valor, recebido, fixo, date, descricao, txt]
+        df_despesas.loc[df_despesas.shape[0]] = [valor, recebido, fixo, date, categoria, descricao, pagamento]
         df_despesas.to_csv("df_despesas.csv")
 
     data_return = df_despesas.to_dict()
     return data_return
+
+
+# Add/Remove categoria receita
+@app.callback(
+    Output("select_receita", "options"),
+    Output('checklist-selected-style-receita', 'options'),
+    Output('checklist-selected-style-receita', 'value'),
+    Output('stored-cat-receitas', 'data'),
+
+    Input("add-category-receita", "n_clicks"),
+    Input("remove-category-receita", 'n_clicks'),
+
+    State("input-add-receita", "value"),
+    State('checklist-selected-style-receita', 'value'),
+    State('stored-cat-receitas', 'data')
+
+)
+def add_category(n, n2, txt, check_delete, data):
+    cat_receita = list(data["Categoria"].values())
+
+    if n and not (txt == '' or txt is None):
+        cat_receita = cat_receita + [txt] if txt not in cat_receita else cat_receita
+
+    if n2:
+        if len(check_delete) > 0:
+            cat_receita = [i for i in cat_receita if i not in check_delete]
+
+    opt_receita = [{"label": i, "value": i} for i in cat_receita]
+    df_cat_receita = pd.DataFrame(cat_receita, columns=['Categoria'])
+    df_cat_receita.to_csv("df_cat_receita.csv")
+    data_return = df_cat_receita.to_dict()
+
+    return [opt_receita, opt_receita, [], data_return]
+
+
+# Add/Remove categoria despesa
+@app.callback(
+    Output("select_despesa", "options"),
+    Output('checklist-selected-style-despesa', 'options'),
+    Output('checklist-selected-style-despesa', 'value'),
+    Output('stored-cat-despesas', 'data'),
+
+    Input("add-category-despesa", "n_clicks"),
+    Input("remove-category-despesa", 'n_clicks'),
+
+    State("input-add-despesa", "value"),
+    State('checklist-selected-style-despesa', 'value'),
+    State('stored-cat-despesas', 'data')
+
+)
+def add_category(n, n2, txt, check_delete, data):
+    cat_despesa = list(data["Categoria"].values())
+
+    if n and not (txt == '' or txt is None):
+        cat_despesa = cat_despesa + [txt] if txt not in cat_despesa else cat_despesa
+
+    if n2:
+        if len(check_delete) > 0:
+            cat_despesa = [i for i in cat_despesa if i not in check_delete]
+
+    opt_despesa = [{"label": i, "value": i} for i in cat_despesa]
+    df_cat_despesa = pd.DataFrame(cat_despesa, columns=['Categoria'])
+    df_cat_despesa.to_csv("df_cat_despesa.csv")
+    data_return = df_cat_despesa.to_dict()
+
+    return [opt_despesa, opt_despesa, [], data_return]

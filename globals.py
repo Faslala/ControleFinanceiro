@@ -15,25 +15,32 @@ else:
                       'Fixo': [],
                       'Data': [],
                       'Categoria': [],
-                      'Descrição': [], }
+                      'Descrição': [],
+                      'Pagamento': []}
 
     df_receitas = pd.DataFrame(data_structure)
     df_despesas = pd.DataFrame(data_structure)
     df_despesas.to_csv("df_despesas.csv")
     df_receitas.to_csv("df_receitas.csv")
 
-if ("df_cat_receita.csv" in os.listdir()) and ("df_cat_despesa.csv" in os.listdir()):
+if (("df_cat_receita.csv" in os.listdir()) and ("df_cat_despesa.csv" in os.listdir()) and
+        ("df_cat_pagamento.csv" in os.listdir())):
     df_cat_receita = pd.read_csv("df_cat_receita.csv", index_col=0)
     df_cat_despesa = pd.read_csv("df_cat_despesa.csv", index_col=0)
+    df_cat_pagamento = pd.read_csv("df_cat_pagamento.csv", index_col=0)
     cat_receita = df_cat_receita.values.tolist()
     cat_despesa = df_cat_despesa.values.tolist()
+    cat_pagamento = df_cat_pagamento.values.tolist()
 
 else:
     cat_receita = {'Categoria': ["Salário", "Aluguel", "13o", "Férias", "Mesada", "Presente", "Reembolso Médico"]}
     cat_despesa = {
         'Categoria': ["Alimentação", "Aluguel", "Gasolina", "Saúde", "Lazer", "Condomínio", "Internet residencial"]}
+    cat_pagamento = {'Pagamento': ["Pix", "Débito", "Crédito", "Dinheiro", "TED / DOC"]}
 
     df_cat_receita = pd.DataFrame(cat_receita, columns=['Categoria'])
     df_cat_despesa = pd.DataFrame(cat_despesa, columns=['Categoria'])
+    df_cat_pagamento = pd.DataFrame(cat_pagamento, columns=['Pagamento'])
     df_cat_receita.to_csv("df_cat_receita.csv")
     df_cat_despesa.to_csv("df_cat_despesa.csv")
+    df_cat_pagamento.to_csv("df_cat_pagamento.csv")
