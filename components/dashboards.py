@@ -1,17 +1,8 @@
 from dash import html, dcc
-from dash.dependencies import Input, Output, State
-from datetime import date, datetime, timedelta
+from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
-import pandas as pd
-import numpy as np
-import plotly.express as px
-import plotly.graph_objects as go
-import calendar
 from globals import *
 from app import app
-
-import pdb
-from dash_bootstrap_templates import template_from_url, ThemeChangerAIO
 
 card_icon = {
     "color": "white",
@@ -98,8 +89,18 @@ layout = dbc.Col([
 
 # =========  Callbacks  =========== #
 # Dropdown Receita
-@app.callback([
-    Output("dropdown-receita", "options"),
+# @app.callback([
+#     Output("dropdown-receita", "options"),
+#     Output("dropdown-receita", "value"),
+#     Output("p-receita-dashboards", "children")],
+#     Input("store-receitas", "data"))
+# def populate_dropdownvalues(data):
+#     df = pd.DataFrame(data)
+#     valor = df['Valor'].sum()
+#     val = df.Categoria.tolist()
+#
+#     return [([{"label": x, "value": x} for x in df.Categoria.unique()]), val, f"R$ {valor:,.2f}"]
+@app.callback([Output("dropdown-receita", "options"),
     Output("dropdown-receita", "value"),
     Output("p-receita-dashboards", "children")],
     Input("store-receitas", "data"))
@@ -108,8 +109,7 @@ def populate_dropdownvalues(data):
     valor = df['Valor'].sum()
     val = df.Categoria.unique().tolist()
 
-    return [([{"label": x, "value": x} for x in df.Categoria.unique()]), val, f"R$ {valor}"]
-
+    return [([{"label": x, "value": x} for x in df.Categoria.unique()]), val, f"R$ {valor:,.2f}"]
 
 # Dropdown Despesa
 @app.callback([
@@ -122,21 +122,21 @@ def populate_dropdownvalues(data):
     valor = df['Valor'].sum()
     val = df.Categoria.unique().tolist()
 
-    return [([{"label": x, "value": x} for x in df.Categoria.unique()]), val, f"R$ {valor}"]
+    return [([{"label": x, "value": x} for x in df.Categoria.unique()]), val, f"R$ {valor:,.2f}"]
 
 
-# VALOR - saldo
-@app.callback(
-    Output("p-saldo-dashboards", "children"),
-    [Input("store-despesas", "data"),
-     Input("store-receitas", "data")])
-def saldo_total(despesas, receitas):
-    df_despesas = pd.DataFrame(despesas)
-    df_receitas = pd.DataFrame(receitas)
-
-    valor = df_receitas['Valor'].sum() - df_despesas['Valor'].sum()
-
-    return f"R$ {valor:,.2f}"
+# # VALOR - saldo
+# @app.callback(
+#     Output("p-saldo-dashboards", "children"),
+#     [Input("store-despesas", "data"),
+#      Input("store-receitas", "data")])
+# def saldo_total(despesas, receitas):
+#     df_despesas = pd.DataFrame(despesas)
+#     df_receitas = pd.DataFrame(receitas)
+#
+#     valor = df_receitas['Valor'].sum() - df_despesas['Valor'].sum()
+#
+#     return f"R$ {valor:,.2f}"
 
 
 # # Gráfico 1
